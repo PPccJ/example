@@ -2739,49 +2739,6 @@ body{
         });
       }
     }
-    }
-  }
-  function toggleMusic(){
-    if(playing){bgm.pause();setPlaying(false);}
-    else{bgm.play().then(function(){setPlaying(true);}).catch(function(){setPlaying(false);});}
-  }
-  if(musicBtn) musicBtn.addEventListener('click',toggleMusic);
-
-  /* ---- 十六档从左往右连贯舒展 + 文案从下往上渐显 (3s) + 滴落灰水滴 ---- */
-  var ribs=document.querySelectorAll('.rib');
-  var poemCol1=document.getElementById('poemCol1');
-  var poemCol2=document.getElementById('poemCol2');
-  var poemDrop=document.getElementById('poemDrop');
-  var subGreeting=document.getElementById('subGreeting');
-
-  function runSweepAnimation(){
-    var stepDelay = 95; // 每一档连贯带出下一档扇面
-    
-    // 扇叶开始打开的那一刻，同步自动触发播放音乐！
-    if(bgm){
-      bgm.muted = false;
-      var playPromise = bgm.play();
-      if(playPromise !== undefined){
-        playPromise.then(function(){
-          setPlaying(true);
-        }).catch(function(err){
-          // 现代浏览器针对未发生任何交互的页面会执行严格的自动播放策略
-          // 此处做全局静默捕获，并在用户任意首次点击/触摸屏幕时立刻瞬时唤醒自动播放
-          console.log('Autoplay deferred for interaction');
-          var resumeAudio = function(){
-            bgm.play().then(function(){
-              setPlaying(true);
-            });
-            window.removeEventListener('click', resumeAudio);
-            window.removeEventListener('touchstart', resumeAudio);
-            window.removeEventListener('scroll', resumeAudio);
-          };
-          window.addEventListener('click', resumeAudio, {once:true});
-          window.addEventListener('touchstart', resumeAudio, {once:true});
-          window.addEventListener('scroll', resumeAudio, {once:true});
-        });
-      }
-    }
 
     // 扇叶随时间从左向右舒展
     ribs.forEach(function(rib, index){
