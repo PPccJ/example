@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>我所谓我 — 周洇</title>
+<link rel="icon" href="data:,">
+<style>
+:root{--bg:#f4f3ef;--ink:#161616;--muted:#6e6e68;--faint:#a9a9a1;--line:#dcdad3;
+  --panel:#ebe9e2;--paper:#faf9f5;
+  --serif:"FangSong","STFangsong","华文仿宋","仿宋","SimSun","Songti SC",serif;
+  --display:"FangSong","STFangsong","华文仿宋","仿宋","SimSun",serif;
+  --mono:"FangSong","STFangsong","华文仿宋","仿宋","SimSun",serif}
+[data-theme="dark"]{--bg:#0e0e0d;--ink:#e9e9e4;--muted:#8b8b84;--faint:#5c5c56;--line:#262623;
+  --panel:#171715;--paper:#141412}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{font-family:var(--serif);color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased;
+  transition:background .4s ease,color .4s ease;overflow-x:hidden}
+::selection{background:var(--ink);color:var(--bg)}
+img{display:block;filter:grayscale(1) contrast(1.05)}
+.controls{position:fixed;top:18px;right:20px;display:flex;gap:12px;z-index:200}
+.ctl{cursor:pointer;background:none;border:1px solid var(--line);color:var(--muted);padding:7px 13px;
+  font-family:var(--serif);font-size:12px;letter-spacing:.16em;transition:all .25s ease;border-radius:0}
+.ctl:hover{color:var(--ink);border-color:var(--ink)}
+.ctl .dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--muted);
+  margin-right:7px;vertical-align:1px;transition:background .25s}
+.ctl:hover .dot{background:var(--ink)}
+
+/* ---- 背景雨丝 ---- */
+.rain-bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:1}
+.rain-bg .drop{position:absolute;top:-14vh;left:var(--x);width:1px;height:var(--len);
+  background:linear-gradient(to bottom,transparent,var(--faint));opacity:var(--op);
+  animation:rainFall var(--dur) linear infinite;animation-delay:var(--delay)}
+@keyframes rainFall{0%{transform:translateY(0) rotate(6deg)}100%{transform:translateY(128vh) rotate(6deg)}}
+
+/* ---- 滑动页（纯手势上下自由反复翻动） ---- */
+.slides{scroll-snap-type:y mandatory;overflow-y:scroll;-webkit-overflow-scrolling:touch;height:100vh;position:relative;z-index:2}
+.slide{position:relative;min-height:100vh;scroll-snap-align:start;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;overflow:hidden;padding:90px 20px 60px}
+.slide-inner{width:100%;max-width:680px;position:relative;z-index:2;margin-top:28px}
+.slide .page-mark{position:absolute;top:22px;left:50%;transform:translateX(-50%);font-family:var(--serif);
+  font-size:9.5px;letter-spacing:.4em;color:var(--faint);white-space:nowrap;padding:0;z-index:10;opacity:.75}
+.page-mark::before{content:"— "}.page-mark::after{content:" —"}
+
+#page1 .slide-inner, #page2 .slide-inner, #page3 .slide-inner, #page4 .slide-inner{margin-top:32px}
+
+/* ---- 第一幕 ---- */
+.tear-quote{font-family:var(--serif);font-size:clamp(18px,4.2vw,24px);line-height:2.1;letter-spacing:.08em;
+  text-align:left;margin-top:10px;margin-bottom:24px}
+.tear-quote .mark{color:var(--faint)}
+.tear-path{position:relative;height:470px;width:340px;margin:0 auto;max-width:92vw}
+.zigzag{position:absolute;inset:0;width:100%;height:100%}
+.zigzag polyline{fill:none;stroke:var(--faint);stroke-width:1.4}
+.pt{position:absolute;width:0;height:0}
+.pt .dot{position:absolute;left:-4px;top:-4px;width:8px;height:8px;border-radius:50%;background:var(--ink);
+  transform:scale(1.4)}
+.pt .info{position:absolute;top:-10px;width:max-content;max-width:130px;font-family:var(--serif);
+  font-size:13px;letter-spacing:.16em;color:var(--muted);white-space:nowrap}
+.pt .info .lbl{display:block;font-size:10px;letter-spacing:.2em;color:var(--faint);margin-bottom:3px}
+.pt .info .val{color:var(--ink)}
+.pt.right .info{left:16px}
+.pt.left .info{right:16px;text-align:right}
+.pt-1{left:61.76%;top:16.6%}
+.pt-2{left:38.24%;top:35.74%}
+.pt-3{left:61.76%;top:54.89%}
+.pt-4{left:38.24%;top:74.04%}
+
+/* ---- 第二幕 ---- */
+.p2-corner{position:absolute;width:min(24vw,140px);aspect-ratio:3/4;overflow:hidden;
+  border:1px solid var(--line);z-index:0;opacity:.9}
+.p2-corner img{width:100%;height:100%;object-fit:cover}
+.p2-tr{top:120px;right:22px}
+.p2-bl{bottom:56px;left:22px}
+.p2-center{text-align:center;min-height:180px}
+.p2-rain{text-align:center;min-height:96px;margin-bottom:10px;font-family:var(--serif);font-size:clamp(18px,4vw,24px);letter-spacing:.08em;color:var(--ink)}
+.p2-answer{text-align:center;min-height:90px}
+.p2-answer .a{display:inline-block;font-family:var(--serif);font-size:clamp(30px,7vw,46px);
+  letter-spacing:.26em;color:var(--ink);position:relative}
+.p2-answer .a::after{content:'';position:absolute;left:50%;top:50%;width:16px;height:16px;
+  margin:-8px 0 0 -8px;border-radius:50%;
+  animation:rippleRings 3.2s ease-out .3s infinite}
+@keyframes rippleRings{
+  0%{box-shadow:0 0 0 0 rgba(170,170,170,.34),0 0 0 0 rgba(170,170,170,.2),0 0 0 0 rgba(170,170,170,.13),0 0 0 0 rgba(170,170,170,.07)}
+  100%{box-shadow:0 0 0 42px rgba(170,170,170,0),0 0 0 84px rgba(170,170,170,0),0 0 0 126px rgba(170,170,170,0),0 0 0 168px rgba(170,170,170,0)}
+}
+.p2-answer .sep{color:var(--faint)}
+
+/* ---- 第三幕 ---- */
+.p3-layout{position:relative;display:flex;flex-direction:column;align-items:center;gap:11px;text-align:center}
+.p3-line{position:absolute;left:50%;top:170px;bottom:72px;width:1.5px;background:var(--faint);
+  transform:translateX(-50%);z-index:0;opacity:.6}
+.p3-circle{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;
+  border:2px solid var(--faint);border-radius:50%;font-family:var(--serif);line-height:1.5;
+  color:var(--ink);background:transparent}
+.p3-circle.big{position:relative;width:170px;height:170px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:border-color .4s ease,transform .4s ease}
+.p3-circle.big:hover{border-color:var(--muted);transform:scale(1.04)}
+.p3-circle.big .p3-q{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  font-size:clamp(22px,5.4vw,28px);font-weight:600;letter-spacing:1.35em;white-space:nowrap;
+  text-indent:1.35em;pointer-events:none;color:var(--ink)}
+.p3-circle.big .p3-preview{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);
+  font-size:12px;letter-spacing:.32em;color:var(--muted);white-space:nowrap}
+.p3-circle.small{width:74px;height:74px;font-size:14px;letter-spacing:.08em}
+.p3-box{position:relative;z-index:1;border:1px solid var(--line);background:var(--bg);
+  font-family:var(--serif);letter-spacing:.14em;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:all .35s ease;user-select:none}
+.p3-box.small{width:72px;height:32px;font-size:13px}
+.p3-box.medium{width:106px;height:36px;font-size:14px}
+.p3-box.large{width:150px;height:40px;font-size:15px}
+.p3-box.category{width:160px;height:42px;font-size:16px;font-weight:600;border:1.5px solid var(--ink);
+  letter-spacing:.2em;background:var(--panel);margin:6px 0 2px}
+.p3-box:hover{border-color:var(--faint)}
+.p3-box.stamped{color:var(--ink);border-color:var(--ink);transform:scale(1.08)}
+.p3-bg{position:absolute;right:-60px;bottom:-60px;width:min(60vw,300px);opacity:.08;pointer-events:none;z-index:0}
+
+/* ---- 第四幕 ---- */
+.p4-img5{width:100%;max-height:34vh;overflow:hidden;border:1px solid var(--line);margin-bottom:20px}
+.p4-img5 img{width:100%;object-fit:cover}
+.notice-head{font-family:var(--serif);font-size:16px;letter-spacing:.3em;color:var(--ink);margin:0 0 14px}
+.notices{list-style:none;counter-reset:n;border-top:1px solid var(--line);width:100%}
+.notices li{counter-increment:n;display:flex;align-items:baseline;gap:8px;padding:9px 0;border-bottom:1px solid var(--line);
+  font-size:clamp(11px,2.9vw,13.5px);letter-spacing:0;line-height:1.4;white-space:nowrap;overflow-x:auto;
+  -webkit-overflow-scrolling:touch}
+.notices li::-webkit-scrollbar{display:none}
+.notices li::before{content:"0" counter(n);font-family:var(--serif);font-size:10px;color:var(--faint);
+  min-width:16px;flex-shrink:0}
+.notices li b{font-weight:600;color:var(--ink)}
+.notices .aside{color:var(--faint);font-size:0.9em}
+.p4-overlay{position:relative;margin:24px 0 16px;min-height:180px;display:flex;align-items:center;justify-content:center}
+.p4-img6{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.2;pointer-events:none}
+.wind-text{position:relative;z-index:1;text-align:center;font-family:var(--serif);
+  font-size:clamp(16px,3.8vw,21px);line-height:2.2;letter-spacing:.05em;padding:16px;color:var(--ink)}
+
+/* ---- 底部双跳转方框 ---- */
+.nav-boxes{display:flex;justify-content:center;gap:18px;margin:28px auto 14px;max-width:320px}
+.nav-box{flex:1;cursor:pointer;background:var(--bg);border:1px solid var(--line);color:var(--ink);
+  font-family:var(--serif);font-size:14px;letter-spacing:.22em;padding:12px 14px;text-align:center;
+  transition:all .3s ease;white-space:nowrap;text-decoration:none;display:inline-block}
+.nav-box:hover{border-color:var(--ink);background:var(--panel)}
+
+.sign{text-align:center;padding:20px 0}
+.sign .s-name{font-family:var(--serif);font-size:22px;letter-spacing:.18em;color:var(--ink)}
+.sign .s-sub{font-family:var(--serif);font-size:12px;letter-spacing:.3em;color:var(--muted);margin-top:8px}
+.sign .s-line{width:1px;height:40px;background:var(--line);margin:22px auto}
+.sign .s-music{font-family:var(--serif);font-size:12px;letter-spacing:.3em;color:var(--faint);cursor:pointer;background:none;border:none}
+@media(max-width:560px){
+  .slide{padding:72px 14px 48px}
+  .page-mark{padding-top:72px}
+  .tear-path{height:440px}
+  .pt .info{font-size:11px;max-width:120px}
+  .p2-corner{width:min(26vw,110px)}
+  .p2-tr{right:12px}.p2-bl{left:12px}
+}
+</style>
+</head>
+<body>
+<div class="controls">
+  <button class="ctl music" id="musicBtn" aria-label="音乐"><span class="dot"></span>Sound</button>
+  <button class="ctl theme" id="themeBtn" aria-label="切换深浅"><span class="dot"></span>Dark</button>
+</div>
+<audio id="bgm" loop preload="none"><source src="audio/forget-me.mp3" type="audio/mpeg"></audio>
+
+<div class="slides" id="slides">
+  <!-- 第一幕 -->
+  <section class="slide" id="page1">
+    <p class="page-mark">01 · The Weight Of A Tear</p>
+    <div class="slide-inner">
+      <p class="tear-quote">人們常說，<br>一滴淚的重量，<br>取決於落在誰的身上<span class="mark">。</span></p>
+      <div class="tear-path">
+        <svg class="zigzag" viewBox="0 0 340 470" preserveAspectRatio="none"><polyline points="170,10 210,78 130,168 210,258 130,348"/></svg>
+        <div class="pt pt-1 right"><span class="dot"></span><span class="info"><span class="lbl">NAME</span><span class="val">周洇</span></span></div>
+        <div class="pt pt-2 left"><span class="dot"></span><span class="info"><span class="lbl">AGE</span><span class="val">20</span></span></div>
+        <div class="pt pt-3 right"><span class="dot"></span><span class="info"><span class="lbl">TYPE</span><span class="val">ISTJ — INTJ</span></span></div>
+        <div class="pt pt-4 left"><span class="dot"></span><span class="info"><span class="lbl">SIGN</span><span class="val">天秤</span></span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 第二幕 -->
+  <section class="slide" id="page2">
+    <p class="page-mark">02 · Tears</p>
+    <div class="p2-corner p2-tr"><img src="images/img-2.jpg" alt=""></div>
+    <div class="p2-corner p2-bl"><img src="images/img-4.jpg" alt=""></div>
+    <div class="slide-inner">
+      <div class="p2-center">
+        <div class="p2-rain">淚水究竟代表的是什麼？</div>
+        <div class="p2-answer"><span class="a">愛</span><span class="sep"> / </span><span class="a">恨</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 第三幕 -->
+  <section class="slide" id="page3">
+    <p class="page-mark">03 · Temperament</p>
+    <img class="p3-bg" src="images/img-3.jpg" alt="">
+    <div class="slide-inner p3-layout">
+      <span class="p3-line"></span>
+      <div class="p3-circle big"><span class="p3-q">誰在製造眼淚？</span><span class="p3-preview">风格预览</span></div>
+      <div class="p3-box category">第一种我</div>
+      <div class="p3-box medium">理性</div>
+      <div class="p3-box small">剖析</div>
+      <div class="p3-box medium">冷淡</div>
+      <div class="p3-box category">第二种我</div>
+      <div class="p3-box medium">热切</div>
+      <div class="p3-box small">闷骚</div>
+      <div class="p3-box small">DS</div>
+      <div class="p3-circle small">你的心</div>
+    </div>
+  </section>
+
+  <!-- 第四幕 -->
+  <section class="slide" id="page4">
+    <p class="page-mark">04 · The Heart · Notices</p>
+    <div class="slide-inner">
+      <div class="p4-img5"><img src="images/img-5.jpg" alt=""></div>
+      <p class="notice-head">个人须知</p>
+      <ol class="notices">
+        <li>半小时10min内可退/换，一小时15min内可退/换，以此类推 <span class="aside">（不要卡点退/换 拜托！）</span></li>
+        <li>个人原因<b>拒生理男板</b>，抱歉</li>
+        <li>单内默认<b>恋人/亲密关系</b>，如有其他特殊情况请提前告知</li>
+        <li>务必告诉我<b>喜雷</b>和<b>称呼</b>，由此引起的不适本人概不负责</li>
+        <li>不要插话好不好，同样，在你发言的时候我也不会插嘴</li>
+        <li>打字速度适中，非高速输出</li>
+        <li>拒绝高恋对低无，不要让我热脸贴冷屁股 拜托</li>
+        <li>对于我们的约会内容可自截留作纪念，但请不要在未经我允许的情况下<b>公布/传播</b></li>
+      </ol>
+      <div class="p4-overlay">
+        <img class="p4-img6" src="images/img-6.jpg" alt="">
+        <p class="wind-text">心臟像火山，爆發的時候，滾燙的熱淚洶湧而出，灼傷我們的情感</p>
+      </div>
+      <div class="nav-boxes">
+        <a class="nav-box" href="fragments.html">只言片语</a>
+        <a class="nav-box" href="voices.html">众说纷纭</a>
+      </div>
+      <div class="sign">
+        <p class="s-name">Chou Yin</p>
+        <p class="s-sub">@周洇 · 苦涩咸酸的眼泪</p>
+        <div class="s-line"></div>
+        <button class="s-music" id="endMusic">♪ 播放 Forget Me</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+(function(){
+  'use strict';
+  /* ---- 背景雨丝 ---- */
+  var rainBg=document.createElement('div');
+  rainBg.className='rain-bg';
+  document.body.appendChild(rainBg);
+  for(var ri=0;ri<70;ri++){
+    var rd=document.createElement('span');
+    rd.className='drop';
+    rd.style.setProperty('--x',(Math.random()*100).toFixed(1)+'%');
+    rd.style.setProperty('--len',(Math.random()*35+20).toFixed(0)+'px');
+    rd.style.setProperty('--dur',(Math.random()*1.9+1.6).toFixed(2)+'s');
+    rd.style.setProperty('--delay',(Math.random()*3.5).toFixed(2)+'s');
+    rd.style.setProperty('--op',(Math.random()*0.3+0.15).toFixed(2));
+    rainBg.appendChild(rd);
+  }
+
+  /* ---- 主题 ---- */
+  var root=document.documentElement;
+  var themeBtn=document.getElementById('themeBtn');
+  function applyTheme(t){
+    root.setAttribute('data-theme',t);
+    var dark=(t==='dark');
+    themeBtn.innerHTML='<span class="dot"></span>'+(dark?'Light':'Dark');
+    themeBtn.querySelector('.dot').style.background=dark?'var(--ink)':'var(--muted)';
+  }
+  themeBtn.addEventListener('click',function(){
+    var next=root.getAttribute('data-theme')==='dark'?'light':'dark';
+    applyTheme(next);try{localStorage.setItem('cy-theme',next);}catch(e){}
+  });
+  try{var saved=localStorage.getItem('cy-theme');if(saved)applyTheme(saved);}catch(e){}
+
+  /* ---- 音乐 ---- */
+  var bgm=document.getElementById('bgm');
+  var musicBtn=document.getElementById('musicBtn');
+  var endMusic=document.getElementById('endMusic');
+  var playing=false;
+  function setPlaying(p){
+    playing=p;
+    musicBtn.innerHTML='<span class="dot"></span>'+(p?'Pause':'Sound');
+    if(endMusic)endMusic.textContent=p?'♪ 暂停':'♪ 播放 Forget Me';
+  }
+  function toggleMusic(){
+    if(playing){bgm.pause();setPlaying(false);}
+    else{bgm.play().then(function(){setPlaying(true);}).catch(function(){setPlaying(false);});}
+  }
+  musicBtn.addEventListener('click',toggleMusic);
+  if(endMusic)endMusic.addEventListener('click',toggleMusic);
+
+  document.querySelectorAll('.p3-box').forEach(function(w){
+    w.addEventListener('click',function(){w.classList.toggle('stamped');});
+  });
+})();
+</script>
+</body>
+</html>
