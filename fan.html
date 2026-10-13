@@ -2708,79 +2708,80 @@ body{
   var poemDrop=document.getElementById('poemDrop');
   var subGreeting=document.getElementById('subGreeting');
 
+  var hasSweepRun = false;
   function runSweepAnimation(){
+    if(hasSweepRun) return;
+    hasSweepRun = true;
     var stepDelay = 95; // 每一档连贯带出下一档扇面
     
-    // 扇叶开始打开的那一刻，同步自动触发播放音乐！
+    // 扇叶开始打开的那一刻，尝试播放音乐
     if(bgm){
       bgm.muted = false;
-      var playPromise = bgm.play();
-      if(playPromise !== undefined){
-        playPromise.then(function(){
-          setPlaying(true);
-        }).catch(function(err){
-          // 现代浏览器针对未发生任何交互的页面会执行严格的自动播放策略
-          console.log('Autoplay deferred for interaction');
-          var resumeAudio = function(e){
-            // 如果用户已经手动暂停过，绝不再自动恢复唤醒！
-            if(userManuallyPaused) return;
-            // 如果点击的是音乐按钮本身，让按钮专属逻辑处理
-            if(e && e.target && e.target.closest('#musicBtn')) return;
-            bgm.play().then(function(){
-              setPlaying(true);
-            }).catch(function(){});
-            window.removeEventListener('click', resumeAudio);
-            window.removeEventListener('touchstart', resumeAudio);
-            window.removeEventListener('scroll', resumeAudio);
-          };
-          window.addEventListener('click', resumeAudio, {once:true});
-          window.addEventListener('touchstart', resumeAudio, {once:true});
-          window.addEventListener('scroll', resumeAudio, {once:true});
-        });
-      }
+      try{
+        var playPromise = bgm.play();
+        if(playPromise !== undefined){
+          playPromise.then(function(){
+            setPlaying(true);
+          }).catch(function(){
+            var resumeAudio = function(e){
+              if(userManuallyPaused) return;
+              if(e && e.target && e.target.closest('#musicBtn')) return;
+              bgm.play().then(function(){
+                setPlaying(true);
+              }).catch(function(){});
+              window.removeEventListener('click', resumeAudio);
+              window.removeEventListener('touchstart', resumeAudio);
+              window.removeEventListener('scroll', resumeAudio);
+            };
+            window.addEventListener('click', resumeAudio, {once:true});
+            window.addEventListener('touchstart', resumeAudio, {once:true});
+            window.addEventListener('scroll', resumeAudio, {once:true});
+          });
+        }
+      }catch(e){}
     }
 
     // 扇叶随时间从左向右舒展
     ribs.forEach(function(rib, index){
       setTimeout(function(){
         rib.classList.add('opened');
-      }, 350 + (index * stepDelay));
+      }, 150 + (index * stepDelay));
     });
 
     // 右上竖列文案一：前半句“此情無計可消除”先显现 (3s)
     setTimeout(function(){
       if(poemCol1) poemCol1.classList.add('show');
-    }, 450);
+    }, 250);
 
     // 后半句于前半句中间位置衔接自下而上浮现 (3s)
     setTimeout(function(){
       if(poemCol2) poemCol2.classList.add('show');
-    }, 450 + 900);
+    }, 250 + 700);
 
     // 结尾水滴：隐于心头之间垂直坠落
     setTimeout(function(){
       if(poemDrop) poemDrop.classList.add('drop-in');
-    }, 450 + 2800);
+    }, 250 + 2000);
 
     // 页面左下角文案二：“卿卿如晤，見字如面”竖列浮现 (2.5s)
     setTimeout(function(){
       if(subGreeting) subGreeting.classList.add('show');
-    }, 450 + 2600);
+    }, 250 + 1800);
 
     // 细长竖线箭头：保持最初敲定的第一页版位，优雅淡出指引第二页
     setTimeout(function(){
       var ind = document.getElementById('scrollIndicator');
       if(ind) ind.classList.add('show');
-    }, 450 + 3800);
+    }, 250 + 2600);
   }
 
-  if(document.readyState === 'complete'){
-    runSweepAnimation();
+  // 保证移动端 DOM 就绪即刻激活动画，绝不等外部资源卡死
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', runSweepAnimation);
   } else {
-    window.addEventListener('load', function(){
-      runSweepAnimation();
-    });
+    runSweepAnimation();
   }
+  window.addEventListener('load', runSweepAnimation);
 
   /* ---- 第二页古宣长卷（3.5s 自上而下舒展展开）与诗词丝线悬吊错落浮现动效 ---- */
   var p2Intro = document.getElementById('p2Intro');
