@@ -860,9 +860,10 @@ body{
     padding:60px 40px 70px !important;
   }
   .p6-verse-col{
-    font-size:15px;
-    letter-spacing:.32em;
-    height:150px;
+    font-size:16px;
+    letter-spacing:.38em;
+    gap:24px;
+    min-height:190px;
   }
 
   /* 三大分支页面模态容器：手机端两侧留白 30px */
@@ -1804,14 +1805,16 @@ body{
   text-orientation:upright;
   -webkit-text-orientation:upright;
   font-family:"Huiwen-mincho","汇文明朝体",serif;
-  font-size:clamp(16px, 3.8vw, 19px);
-  letter-spacing:.38em;
+  font-size:clamp(17px, 4.2vw, 21px);
+  letter-spacing:.46em;
   color:var(--ink);
-  line-height:1.7;
-  height:170px;
+  line-height:2.6;
+  gap:36px;
+  min-height:220px;
   display:flex;
-  flex-direction:column;
-  justify-content:space-between;
+  flex-direction:row-reverse;
+  justify-content:center;
+  align-items:flex-start;
   opacity:0;
   transform:translateY(20px);
   transition:all 2.4s ease;
